@@ -30,6 +30,10 @@
  */
 namespace Upload\Validation;
 
+use Upload\Exception;
+use Upload\FileInfoInterface;
+use Upload\ValidationInterface;
+
 /**
  * Validate Upload Media Type
  *
@@ -39,37 +43,39 @@ namespace Upload\Validation;
  * @since   1.0.0
  * @package Upload
  */
-class Mimetype implements \Upload\ValidationInterface
-{
-    /**
-     * Valid media types
-     * @var array
-     */
-    protected $mimetypes;
-
-    /**
-     * Constructor
-     *
-     * @param string|array $mimetypes
-     */
-    public function __construct($mimetypes)
-    {
-        if (is_string($mimetypes) === true) {
-            $mimetypes = array($mimetypes);
-        }
-        $this->mimetypes = $mimetypes;
-    }
-
-    /**
-     * Validate
-     *
-     * @param  \Upload\FileInfoInterface  $fileInfo
-     * @throws \RuntimeException          If validation fails
-     */
-    public function validate(\Upload\FileInfoInterface $fileInfo)
-    {
-        if (in_array($fileInfo->getMimetype(), $this->mimetypes) === false) {
-            throw new \Upload\Exception(sprintf('Invalid mimetype. Must be one of: %s', implode(', ', $this->mimetypes)), $fileInfo);
-        }
-    }
+class Mimetype implements ValidationInterface {
+	
+	/**
+	 * Valid media types
+	 * @var array
+	 */
+	protected $mimetypes;
+	
+	/**
+	 * Constructor
+	 *
+	 * @param string|array $mimetypes
+	 */
+	public function __construct( $mimetypes )
+	{
+		if ( is_string( $mimetypes ) ) $mimetypes = [ $mimetypes ];
+		
+		$this->mimetypes = array_map( 'strtolower', $mimetypes );
+	}
+	
+	/**
+	 * Validate
+	 *
+	 * @param  FileInfoInterface $fileInfo
+	 *
+	 * @throws \RuntimeException          If validation fails
+	 */
+	public function validate( FileInfoInterface $fileInfo )
+	{
+		if ( ! in_array( $fileInfo->getMimetype(), $this->mimetypes ) )
+		{
+			throw new Exception( sprintf( 'Invalid mimetype. Must be one of: %s',
+				implode( ', ', $this->mimetypes ) ), $fileInfo );
+		}
+	}
 }

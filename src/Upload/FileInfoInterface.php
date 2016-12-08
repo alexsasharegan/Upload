@@ -37,27 +37,75 @@ namespace Upload;
  * @since   2.0.0
  * @package Upload
  */
-interface FileInfoInterface
-{
-    public function getPathname();
-
-    public function getName();
-
-    public function setName($name);
-
-    public function getExtension();
-
-    public function setExtension($extension);
-
-    public function getNameWithExtension();
-
-    public function getMimetype();
-
-    public function getSize();
-
-    public function getMd5();
-
-    public function getDimensions();
-
-    public function isUploadedFile();
+/**
+ * Interface FileInfoInterface
+ * @package Upload
+ */
+interface FileInfoInterface {
+	
+	/**
+	 * @return string
+	 */
+	public function getPathname();
+	
+	/**
+	 * @return string
+	 */
+	public function getName();
+	
+	/**
+	 * @param $name
+	 *
+	 * @return FileInfoInterface
+	 */
+	public function setName( $name );
+	
+	/**
+	 * Get file extension (without dot prefix)
+	 *
+	 * @return string
+	 */
+	public function getExtension();
+	
+	/**
+	 * Set file extension (without dot prefix)
+	 *
+	 * @param $extension
+	 *
+	 * @return FileInfoInterface
+	 */
+	public function setExtension( $extension );
+	
+	/**
+	 * @return string
+	 */
+	public function getNameWithExtension();
+	
+	/**
+	 * @return string
+	 */
+	public function getMimetype();
+	
+	/**
+	 * Gets file size
+	 * @link http://php.net/manual/en/splfileinfo.getsize.php
+	 * @return int The file size in bytes.
+	 * @since 5.1.2
+	 */
+	public function getSize();
+	
+	/**
+	 * @return string
+	 */
+	public function getMd5();
+	
+	/**
+	 * @return array
+	 */
+	public function getDimensions();
+	
+	/**
+	 * @return bool
+	 */
+	public function isUploadedFile();
 }

@@ -30,6 +30,11 @@
  */
 namespace Upload\Validation;
 
+use Upload\Exception;
+use Upload\File;
+use Upload\FileInfoInterface;
+use Upload\ValidationInterface;
+
 /**
  * Validate Upload File Size
  *
@@ -41,55 +46,64 @@ namespace Upload\Validation;
  * @since   1.0.0
  * @package Upload
  */
-class Size implements \Upload\ValidationInterface
-{
-    /**
-     * Minimum acceptable file size (bytes)
-     * @var int
-     */
-    protected $minSize;
-
-    /**
-     * Maximum acceptable file size (bytes)
-     * @var int
-     */
-    protected $maxSize;
-
-    /**
-     * Constructor
-     *
-     * @param int $maxSize Maximum acceptable file size in bytes (inclusive)
-     * @param int $minSize Minimum acceptable file size in bytes (inclusive)
-     */
-    public function __construct($maxSize, $minSize = 0)
-    {
-        if (is_string($maxSize)) {
-            $maxSize = \Upload\File::humanReadableToBytes($maxSize);
-        }
-        $this->maxSize = $maxSize;
-
-        if (is_string($minSize)) {
-            $minSize = \Upload\File::humanReadableToBytes($minSize);
-        }
-        $this->minSize = $minSize;
-    }
-
-    /**
-     * Validate
-     *
-     * @param  \Upload\FileInfoInterface  $fileInfo
-     * @throws \RuntimeException          If validation fails
-     */
-    public function validate(\Upload\FileInfoInterface $fileInfo)
-    {
-        $fileSize = $fileInfo->getSize();
-
-        if ($fileSize < $this->minSize) {
-            throw new \Upload\Exception(sprintf('File size is too small. Must be greater than or equal to: %s', $this->minSize), $fileInfo);
-        }
-
-        if ($fileSize > $this->maxSize) {
-            throw new \Upload\Exception(sprintf('File size is too large. Must be less than: %s', $this->maxSize), $fileInfo);
-        }
-    }
+class Size implements ValidationInterface {
+	
+	/**
+	 * Minimum acceptable file size (bytes)
+	 * @var int
+	 */
+	protected $minSize;
+	
+	/**
+	 * Maximum acceptable file size (bytes)
+	 * @var int
+	 */
+	protected $maxSize;
+	
+	/**
+	 * Constructor
+	 *
+	 * @param int $maxSize Maximum acceptable file size in bytes (inclusive)
+	 * @param int $minSize Minimum acceptable file size in bytes (inclusive)
+	 */
+	public function __construct( $maxSize, $minSize = 0 )
+	{
+		if ( is_string( $maxSize ) )
+		{
+			$maxSize = File::humanReadableToBytes( $maxSize );
+		}
+		$this->maxSize = $maxSize;
+		
+		if ( is_string( $minSize ) )
+		{
+			$minSize = File::humanReadableToBytes( $minSize );
+		}
+		$this->minSize = $minSize;
+	}
+	
+	/**
+	 * Validate
+	 *
+	 * @param  FileInfoInterface $fileInfo
+	 *
+	 * @throws \RuntimeException          If validation fails
+	 */
+	public function validate( FileInfoInterface $fileInfo )
+	{
+		$fileSize = $fileInfo->getSize();
+		
+		if ( $fileSize < $this->minSize )
+		{
+			throw new Exception(
+				sprintf( 'File size is too small. Must be greater than or equal to: %s', $this->minSize ), $fileInfo
+			);
+		}
+		
+		if ( $fileSize > $this->maxSize )
+		{
+			throw new Exception(
+				sprintf( 'File size is too large. Must be less than: %s', $this->maxSize ), $fileInfo
+			);
+		}
+	}
 }

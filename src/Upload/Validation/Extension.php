@@ -30,6 +30,10 @@
  */
 namespace Upload\Validation;
 
+use Upload\Exception;
+use Upload\FileInfoInterface;
+use Upload\ValidationInterface;
+
 /**
  * Validate File Extension
  *
@@ -41,42 +45,49 @@ namespace Upload\Validation;
  * @author  Alex Kucherenko <kucherenko.email@gmail.com>
  * @package Upload
  */
-class Extension implements \Upload\ValidationInterface
-{
-    /**
-     * Array of acceptable file extensions without leading dots
-     * @var array
-     */
-    protected $allowedExtensions;
-
-    /**
-     * Constructor
-     *
-     * @param string|array $allowedExtensions Allowed file extensions
-     * @example new \Upload\Validation\Extension(array('png','jpg','gif'))
-     * @example new \Upload\Validation\Extension('png')
-     */
-    public function __construct($allowedExtensions)
-    {
-        if (is_string($allowedExtensions) === true) {
-            $allowedExtensions = array($allowedExtensions);
-        }
-
-        $this->allowedExtensions = array_map('strtolower', $allowedExtensions);
-    }
-
-    /**
-     * Validate
-     *
-     * @param  \Upload\FileInfoInterface $fileInfo
-     * @throws \RuntimeException         If validation fails
-     */
-    public function validate(\Upload\FileInfoInterface $fileInfo)
-    {
-        $fileExtension = strtolower($fileInfo->getExtension());
-
-        if (in_array($fileExtension, $this->allowedExtensions) === false) {
-            throw new \Upload\Exception(sprintf('Invalid file extension. Must be one of: %s', implode(', ', $this->allowedExtensions)), $fileInfo);
-        }
-    }
+class Extension implements ValidationInterface {
+	
+	/**
+	 * Array of acceptable file extensions without leading dots
+	 * @var array
+	 */
+	protected $allowedExtensions;
+	
+	/**
+	 * Constructor
+	 *
+	 * @param string|array $allowedExtensions Allowed file extensions
+	 *
+	 * @example new \Upload\Validation\Extension(array('png','jpg','gif'))
+	 * @example new \Upload\Validation\Extension('png')
+	 */
+	public function __construct( $allowedExtensions )
+	{
+		if ( is_string( $allowedExtensions ) )
+		{
+			$allowedExtensions = [ $allowedExtensions ];
+		}
+		
+		$this->allowedExtensions = array_map( 'strtolower', $allowedExtensions );
+	}
+	
+	/**
+	 * Validate
+	 *
+	 * @param  FileInfoInterface $fileInfo
+	 *
+	 * @throws \RuntimeException         If validation fails
+	 */
+	public function validate( FileInfoInterface $fileInfo )
+	{
+		$fileExtension = strtolower( $fileInfo->getExtension() );
+		
+		if ( ! in_array( $fileExtension, $this->allowedExtensions ) )
+		{
+			throw new Exception(
+				sprintf( 'Invalid file extension. Must be one of: %s', implode( ', ', $this->allowedExtensions ) ),
+				$fileInfo
+			);
+		}
+	}
 }
